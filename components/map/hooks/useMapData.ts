@@ -16,10 +16,19 @@ export default function useMapData() {
   const [rivers, setRivers] =
     useState<any>(null);
 
+  const [cooperatives, setCooperatives] =
+    useState<any>(null);
+
   useEffect(() => {
     fetch(api.wards)
       .then((r) => r.json())
       .then(setWards);
+  }, []);
+
+  useEffect(() => {
+    fetch(api.cooperatives)
+      .then((r) => r.json())
+      .then(setCooperatives);
   }, []);
 
   const loadRoads =
@@ -48,6 +57,7 @@ export default function useMapData() {
     wards,
     roads,
     rivers,
+    cooperatives,
     loadRoads,
     loadRivers,
   };

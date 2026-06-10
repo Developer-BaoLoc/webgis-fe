@@ -1,26 +1,27 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
-import L from 'leaflet';
+import L from "leaflet";
 
-import UserPanel from './auth/UserPanel';
-import SearchWardBox from './map/SearchWardBox';
+import UserPanel from "./auth/UserPanel";
+import SearchWardBox from "./map/SearchWardBox";
 
-import MapRefSetter from './map/controls/MapRefSetter';
-import ZoomTracker from './map/controls/ZoomTracker';
-import FlyToMyLocation from './map/controls/FlyToMyLocation';
+import MapRefSetter from "./map/controls/MapRefSetter";
+import ZoomTracker from "./map/controls/ZoomTracker";
+import FlyToMyLocation from "./map/controls/FlyToMyLocation";
 
-import useMapData from './map/hooks/useMapData';
-import useCurrentLocation from './map/hooks/useCurrentLocation';
-import useWardSearch from './map/hooks/useWardSearch';
-import useZoomToWard from './map/hooks/useZoomToWard';
+import useMapData from "./map/hooks/useMapData";
+import useCurrentLocation from "./map/hooks/useCurrentLocation";
+import useWardSearch from "./map/hooks/useWardSearch";
+import useZoomToWard from "./map/hooks/useZoomToWard";
+import useCooperativeSelection from "./map/hooks/useCooperativeSelection";
 
-import CurrentLocationMarker from './map/markers/CurrentLocationMarker';
-import LayerControlPanel from './map/LayerControlPanel';
+import CurrentLocationMarker from "./map/markers/CurrentLocationMarker";
+import LayerControlPanel from "./map/LayerControlPanel";
 
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, Pane } from "react-leaflet";
 
 export default function LeafletMap() {
   const { user } = useAuth();
@@ -30,13 +31,8 @@ export default function LeafletMap() {
 
   const [zoom, setZoom] = useState(11);
 
-  const {
-    wards,
-    roads,
-    rivers,
-    loadRoads,
-    loadRivers,
-  } = useMapData();
+  const { wards, roads, rivers, cooperatives, loadRoads, loadRivers } =
+    useMapData();
 
   const { currentLocation, currentWard } = useCurrentLocation();
 
@@ -48,11 +44,14 @@ export default function LeafletMap() {
     clearSearch,
   } = useWardSearch(wards);
 
+  const { selectedWardId, zoomToWard } = useZoomToWard(mapRef, wardLayersRef);
+
   const {
-    selectedWardId,
-    setSelectedWardId,
-    zoomToWard,
-  } = useZoomToWard(mapRef, wardLayersRef);
+    selectedCooperative,
+    cooperativeLayersRef,
+    onSelectCooperative,
+    onClearSelection,
+  } = useCooperativeSelection();
 
   useEffect(() => {
     if (!wards) return;
@@ -74,7 +73,7 @@ export default function LeafletMap() {
       <MapContainer
         center={[10.045, 105.746]}
         zoom={11}
-        style={{ width: '100vw', height: '100vh' }}
+        style={{ width: "100vw", height: "100vh" }}
       >
         <MapRefSetter mapRef={mapRef} />
 
@@ -83,6 +82,12 @@ export default function LeafletMap() {
         <ZoomTracker onZoomChange={setZoom} />
 
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <Pane
+          name="cooperatives"
+          style={{
+            zIndex: 650,
+          }}
+        />
 
         {currentLocation && (
           <CurrentLocationMarker
@@ -95,9 +100,13 @@ export default function LeafletMap() {
           wards={wards}
           roads={roads}
           rivers={rivers}
+          cooperatives={cooperatives}
           zoom={zoom}
           selectedWardId={selectedWardId}
           wardLayersRef={wardLayersRef}
+          cooperativeLayersRef={cooperativeLayersRef}
+          onSelectCooperative={onSelectCooperative}
+          onClearSelection={onClearSelection}
         />
       </MapContainer>
     </>
