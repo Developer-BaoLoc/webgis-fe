@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 
-import L from "leaflet";
-
 import UserPanel from "./auth/UserPanel";
 import SearchWardBox from "./map/SearchWardBox";
 
@@ -17,6 +15,10 @@ import useCurrentLocation from "./map/hooks/useCurrentLocation";
 import useWardSearch from "./map/hooks/useWardSearch";
 import useZoomToWard from "./map/hooks/useZoomToWard";
 import useCooperativeSelection from "./map/hooks/useCooperativeSelection";
+import useIrrigationSelection from "./map/hooks/useIrrigationSelection";
+import useEffectiveModelSelection from "./map/hooks/useEffectiveModelSelection";
+import useOcopEntitySelection from "./map/hooks/useOcopEntitySelection";
+import useProductionAreaSelection from "./map/hooks/useProductionAreaSelection";
 
 import CurrentLocationMarker from "./map/markers/CurrentLocationMarker";
 import LayerControlPanel from "./map/LayerControlPanel";
@@ -31,8 +33,18 @@ export default function LeafletMap() {
 
   const [zoom, setZoom] = useState(11);
 
-  const { wards, roads, rivers, cooperatives, loadRoads, loadRivers } =
-    useMapData();
+  const {
+    wards,
+    roads,
+    rivers,
+    cooperatives,
+    irrigations,
+    effectiveModels,
+    ocopEntities,
+    productionAreas,
+    loadRoads,
+    loadRivers,
+  } = useMapData();
 
   const { currentLocation, currentWard } = useCurrentLocation();
 
@@ -50,8 +62,37 @@ export default function LeafletMap() {
     selectedCooperative,
     cooperativeLayersRef,
     onSelectCooperative,
-    onClearSelection,
+    onClearSelection: onClearCooperativeSelection,
   } = useCooperativeSelection();
+
+  const {
+    selectedIrrigation,
+    irrigationLayersRef,
+    onSelectIrrigation,
+    onClearSelection: onClearIrrigationSelection,
+  } = useIrrigationSelection();
+
+  const {
+    selectedEffectiveModel,
+    effectiveModelLayersRef,
+    onSelectEffectiveModel,
+    onClearSelection: onClearEffectiveModelSelection,
+  } = useEffectiveModelSelection();
+
+  const {
+    selectedOcopEntity,
+    ocopEntityLayersRef,
+    onSelectOcopEntity,
+    onClearSelection: onClearOcopEntitySelection,
+  } = useOcopEntitySelection();
+
+  const {
+    selectedProductionArea,
+    selectedProductionAreaId,
+    productionAreaLayersRef,
+    onSelectProductionArea,
+    onClearSelection: onClearProductionAreaSelection,
+  } = useProductionAreaSelection();
 
   useEffect(() => {
     if (!wards) return;
@@ -82,12 +123,33 @@ export default function LeafletMap() {
         <ZoomTracker onZoomChange={setZoom} />
 
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
         <Pane
           name="cooperatives"
-          style={{
-            zIndex: 650,
-          }}
+          style={{ zIndex: 650 }}
         />
+        <Pane
+          name="irrigations"
+          style={{ zIndex: 651 }}
+        />
+        <Pane
+          name="effective-models"
+          style={{ zIndex: 652 }}
+        />
+        <Pane
+          name="ocop-entities"
+          style={{ zIndex: 653 }}
+        />
+        
+        <Pane
+  name="wards"
+  style={{ zIndex: 300 }}
+/>
+
+<Pane
+  name="production-areas"
+  style={{ zIndex: 500 }}
+/>
 
         {currentLocation && (
           <CurrentLocationMarker
@@ -101,12 +163,29 @@ export default function LeafletMap() {
           roads={roads}
           rivers={rivers}
           cooperatives={cooperatives}
+          irrigations={irrigations}
+          effectiveModels={effectiveModels}
+          ocopEntities={ocopEntities}
+          productionAreas={productionAreas}
           zoom={zoom}
           selectedWardId={selectedWardId}
           wardLayersRef={wardLayersRef}
           cooperativeLayersRef={cooperativeLayersRef}
           onSelectCooperative={onSelectCooperative}
-          onClearSelection={onClearSelection}
+          onClearCooperativeSelection={onClearCooperativeSelection}
+          irrigationLayersRef={irrigationLayersRef}
+          onSelectIrrigation={onSelectIrrigation}
+          onClearIrrigationSelection={onClearIrrigationSelection}
+          effectiveModelLayersRef={effectiveModelLayersRef}
+          onSelectEffectiveModel={onSelectEffectiveModel}
+          onClearEffectiveModelSelection={onClearEffectiveModelSelection}
+          ocopEntityLayersRef={ocopEntityLayersRef}
+          onSelectOcopEntity={onSelectOcopEntity}
+          onClearOcopEntitySelection={onClearOcopEntitySelection}
+          productionAreaLayersRef={productionAreaLayersRef}
+          selectedProductionAreaId={selectedProductionAreaId}
+          onSelectProductionArea={onSelectProductionArea}
+          onClearProductionAreaSelection={onClearProductionAreaSelection}
         />
       </MapContainer>
     </>

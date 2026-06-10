@@ -16,6 +16,7 @@ export default function WardLayer({
   return (
     <GeoJSON
       data={wards}
+      pane="wards"
       style={(feature: any) => ({
         color:
           feature.properties.osm_id === selectedWardId

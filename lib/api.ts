@@ -6,6 +6,10 @@ export const api = {
   roads: `${API_URL}/roads`,
   rivers: `${API_URL}/rivers`,
   cooperatives: `${API_URL}/cooperatives`,
+  irrigations: `${API_URL}/irrigations`,
+  effectiveModels: `${API_URL}/effective-models`,
+  ocopEntities: `${API_URL}/ocop-entities`,
+  productionAreas: `${API_URL}/production-areas`,
 
   login: `${API_URL}/auth/login`,
 

@@ -19,6 +19,18 @@ export default function useMapData() {
   const [cooperatives, setCooperatives] =
     useState<any>(null);
 
+  const [irrigations, setIrrigations] =
+    useState<any>(null);
+
+  const [effectiveModels, setEffectiveModels] =
+    useState<any>(null);
+
+  const [ocopEntities, setOcopEntities] =
+    useState<any>(null);
+
+  const [productionAreas, setProductionAreas] =
+    useState<any>(null);
+
   useEffect(() => {
     fetch(api.wards)
       .then((r) => r.json())
@@ -29,6 +41,30 @@ export default function useMapData() {
     fetch(api.cooperatives)
       .then((r) => r.json())
       .then(setCooperatives);
+  }, []);
+
+  useEffect(() => {
+    fetch(api.irrigations)
+      .then((r) => r.json())
+      .then(setIrrigations);
+  }, []);
+
+  useEffect(() => {
+    fetch(api.effectiveModels)
+      .then((r) => r.json())
+      .then(setEffectiveModels);
+  }, []);
+
+  useEffect(() => {
+    fetch(api.ocopEntities)
+      .then((r) => r.json())
+      .then(setOcopEntities);
+  }, []);
+
+  useEffect(() => {
+    fetch(api.productionAreas)
+      .then((r) => r.json())
+      .then(setProductionAreas);
   }, []);
 
   const loadRoads =
@@ -58,6 +94,10 @@ export default function useMapData() {
     roads,
     rivers,
     cooperatives,
+    irrigations,
+    effectiveModels,
+    ocopEntities,
+    productionAreas,
     loadRoads,
     loadRivers,
   };
