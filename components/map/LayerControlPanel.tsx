@@ -4,17 +4,19 @@ import type { MutableRefObject } from 'react';
 import {
   LayersControl,
 } from 'react-leaflet';
-import type { CircleMarker, Layer } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import WardLayer from './layers/WardLayer';
 import RoadLayer from './layers/RoadLayer';
 import RiverLayer from './layers/RiverLayer';
 import CooperativeLayer from './layers/CooperativeLayer';
+import CooperativeGroupLayer from './layers/CooperativeGroupLayer';
 import IrrigationLayer from './layers/IrrigationLayer';
 import EffectiveModelLayer from './layers/EffectiveModelLayer';
 import OcopEntityLayer from './layers/OcopEntityLayer';
 import ProductionAreaLayer from './layers/ProductionAreaLayer';
 import type { SelectedCooperative } from './layers/cooperatives/types';
+import type { SelectedCooperativeGroup } from './layers/cooperative-groups/types';
 import type { SelectedIrrigation } from './layers/irrigations/types';
 import type { SelectedEffectiveModel } from './layers/effective-models/types';
 import type { SelectedOcopEntity } from './layers/ocop-entities/types';
@@ -25,6 +27,7 @@ interface Props {
   roads: any;
   rivers: any;
   cooperatives: any;
+  cooperativeGroups: any;
   irrigations: any;
   effectiveModels: any;
   ocopEntities: any;
@@ -38,47 +41,58 @@ interface Props {
   wardLayersRef: any;
 
   cooperativeLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectCooperative: (
     cooperative: SelectedCooperative,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
   onClearCooperativeSelection: (
-    layer: CircleMarker,
+    layer: Layer,
+  ) => void;
+
+  cooperativeGroupLayersRef: MutableRefObject<
+    Record<number, Layer>
+  >;
+  onSelectCooperativeGroup: (
+    cooperativeGroup: SelectedCooperativeGroup,
+    layer: Layer,
+  ) => void;
+  onClearCooperativeGroupSelection: (
+    layer: Layer,
   ) => void;
 
   irrigationLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectIrrigation: (
     irrigation: SelectedIrrigation,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
   onClearIrrigationSelection: (
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
 
   effectiveModelLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectEffectiveModel: (
     effectiveModel: SelectedEffectiveModel,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
   onClearEffectiveModelSelection: (
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
 
   ocopEntityLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectOcopEntity: (
     ocopEntity: SelectedOcopEntity,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
   onClearOcopEntitySelection: (
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
 
   productionAreaLayersRef: MutableRefObject<
@@ -99,6 +113,7 @@ export default function LayerControlPanel({
   roads,
   rivers,
   cooperatives,
+  cooperativeGroups,
   irrigations,
   effectiveModels,
   ocopEntities,
@@ -109,6 +124,9 @@ export default function LayerControlPanel({
   cooperativeLayersRef,
   onSelectCooperative,
   onClearCooperativeSelection,
+  cooperativeGroupLayersRef,
+  onSelectCooperativeGroup,
+  onClearCooperativeGroupSelection,
   irrigationLayersRef,
   onSelectIrrigation,
   onClearIrrigationSelection,
@@ -177,6 +195,26 @@ export default function LayerControlPanel({
             }
             onClearSelection={
               onClearCooperativeSelection
+            }
+          />
+        </LayersControl.Overlay>
+      )}
+
+      {cooperativeGroups && (
+        <LayersControl.Overlay
+          checked
+          name="Cooperative Groups"
+        >
+          <CooperativeGroupLayer
+            cooperativeGroups={cooperativeGroups}
+            cooperativeGroupLayersRef={
+              cooperativeGroupLayersRef
+            }
+            onSelectCooperativeGroup={
+              onSelectCooperativeGroup
+            }
+            onClearSelection={
+              onClearCooperativeGroupSelection
             }
           />
         </LayersControl.Overlay>

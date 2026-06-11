@@ -13,18 +13,13 @@ export function toOcopEntityProperties(
     address: properties.address as string,
     phone: properties.phone as string,
     status: properties.status as string,
+    icon: properties.icon as string | null,
+    images: (properties.images as string[]) ?? [],
   };
 }
 
 export function toSelectedOcopEntity(
   properties: OcopEntityProperties,
 ): SelectedOcopEntity {
-  return {
-    id: properties.id,
-    name: properties.name,
-    representative: properties.representative,
-    address: properties.address,
-    phone: properties.phone,
-    status: properties.status,
-  };
+  return { ...properties };
 }

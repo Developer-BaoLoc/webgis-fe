@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { AuthProvider } from "@/context/AuthContext";
+import { ToastProvider } from "@/hooks/useToast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +26,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+  console.log('API_URL =', process.env.NEXT_PUBLIC_API_URL);
+  return ( 
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </AuthProvider>
       </body>
     </html>

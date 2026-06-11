@@ -1,16 +1,12 @@
-import L from 'leaflet';
-
+import { createPointMarker } from '../shared/createPointMarker';
 import { DEFAULT_MARKER_STYLE } from './markerStyles';
 
 export function createOcopEntityMarker(
-  _feature: GeoJSON.Feature,
+  feature: GeoJSON.Feature,
   latlng: L.LatLngExpression,
 ) {
-  return L.circleMarker(
-    latlng,
-    {
-      ...DEFAULT_MARKER_STYLE,
-      pane: 'ocop-entities',
-    },
-  );
+  return createPointMarker(feature, latlng, {
+    pane: 'ocop-entities',
+    defaultStyle: DEFAULT_MARKER_STYLE,
+  });
 }

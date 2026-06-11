@@ -19,6 +19,9 @@ export default function useMapData() {
   const [cooperatives, setCooperatives] =
     useState<any>(null);
 
+  const [cooperativeGroups, setCooperativeGroups] =
+    useState<any>(null);
+
   const [irrigations, setIrrigations] =
     useState<any>(null);
 
@@ -41,6 +44,12 @@ export default function useMapData() {
     fetch(api.cooperatives)
       .then((r) => r.json())
       .then(setCooperatives);
+  }, []);
+
+  useEffect(() => {
+    fetch(api.cooperativeGroups)
+      .then((r) => r.json())
+      .then(setCooperativeGroups);
   }, []);
 
   useEffect(() => {
@@ -94,6 +103,7 @@ export default function useMapData() {
     roads,
     rivers,
     cooperatives,
+    cooperativeGroups,
     irrigations,
     effectiveModels,
     ocopEntities,

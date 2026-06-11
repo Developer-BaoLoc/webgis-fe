@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react';
-import type { CircleMarker } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import { buildOcopEntityPopupHtml } from './popup';
 import {
@@ -10,20 +10,18 @@ import type { SelectedOcopEntity } from './types';
 
 interface MarkerEventHandlers {
   ocopEntityLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectOcopEntity: (
     ocopEntity: SelectedOcopEntity,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
-  onClearSelection: (
-    layer: CircleMarker,
-  ) => void;
+  onClearSelection: (layer: Layer) => void;
 }
 
 export function attachOcopEntityMarkerEvents(
   feature: GeoJSON.Feature,
-  layer: CircleMarker,
+  layer: Layer,
   handlers: MarkerEventHandlers,
 ) {
   const properties = toOcopEntityProperties(
@@ -37,9 +35,6 @@ export function attachOcopEntityMarkerEvents(
   layer.bindPopup(
     buildOcopEntityPopupHtml(properties),
   );
-
-  layer.bringToFront();
-
   layer.on('click', () => {
     handlers.onSelectOcopEntity(
       toSelectedOcopEntity(properties),

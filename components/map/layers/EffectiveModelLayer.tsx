@@ -3,7 +3,7 @@ import {
   type MutableRefObject,
 } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import type { CircleMarker } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import { createEffectiveModelMarker } from './effective-models/createEffectiveModelMarker';
 import { attachEffectiveModelMarkerEvents } from './effective-models/markerEvents';
@@ -12,15 +12,13 @@ import type { SelectedEffectiveModel } from './effective-models/types';
 interface Props {
   effectiveModels: GeoJSON.FeatureCollection;
   effectiveModelLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectEffectiveModel: (
     effectiveModel: SelectedEffectiveModel,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
-  onClearSelection: (
-    layer: CircleMarker,
-  ) => void;
+  onClearSelection: (layer: Layer) => void;
 }
 
 export default function EffectiveModelLayer({
@@ -32,7 +30,7 @@ export default function EffectiveModelLayer({
   const onEachFeature = useCallback(
     (
       feature: GeoJSON.Feature,
-      layer: CircleMarker,
+      layer: Layer,
     ) => {
       attachEffectiveModelMarkerEvents(
         feature,

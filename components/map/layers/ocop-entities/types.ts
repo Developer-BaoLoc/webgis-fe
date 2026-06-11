@@ -5,6 +5,8 @@ export interface SelectedOcopEntity {
   address: string;
   phone: string;
   status: string;
+  icon?: string | null;
+  images?: string[];
 }
 
 export interface OcopEntityProperties {
@@ -14,4 +16,6 @@ export interface OcopEntityProperties {
   address: string;
   phone: string;
   status: string;
+  icon?: string | null;
+  images?: string[];
 }

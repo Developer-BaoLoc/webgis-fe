@@ -3,7 +3,7 @@ import {
   type MutableRefObject,
 } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import type { CircleMarker } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import { createCooperativeMarker } from './cooperatives/createCooperativeMarker';
 import { attachCooperativeMarkerEvents } from './cooperatives/markerEvents';
@@ -12,14 +12,14 @@ import type { SelectedCooperative } from './cooperatives/types';
 interface Props {
   cooperatives: GeoJSON.FeatureCollection;
   cooperativeLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectCooperative: (
     cooperative: SelectedCooperative,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
   onClearSelection: (
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
 }
 
@@ -32,7 +32,7 @@ export default function CooperativeLayer({
   const onEachFeature = useCallback(
     (
       feature: GeoJSON.Feature,
-      layer: CircleMarker,
+      layer: Layer,
     ) => {
       attachCooperativeMarkerEvents(
         feature,

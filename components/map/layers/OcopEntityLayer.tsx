@@ -3,7 +3,7 @@ import {
   type MutableRefObject,
 } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import type { CircleMarker } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import { createOcopEntityMarker } from './ocop-entities/createOcopEntityMarker';
 import { attachOcopEntityMarkerEvents } from './ocop-entities/markerEvents';
@@ -12,15 +12,13 @@ import type { SelectedOcopEntity } from './ocop-entities/types';
 interface Props {
   ocopEntities: GeoJSON.FeatureCollection;
   ocopEntityLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectOcopEntity: (
     ocopEntity: SelectedOcopEntity,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
-  onClearSelection: (
-    layer: CircleMarker,
-  ) => void;
+  onClearSelection: (layer: Layer) => void;
 }
 
 export default function OcopEntityLayer({
@@ -32,7 +30,7 @@ export default function OcopEntityLayer({
   const onEachFeature = useCallback(
     (
       feature: GeoJSON.Feature,
-      layer: CircleMarker,
+      layer: Layer,
     ) => {
       attachOcopEntityMarkerEvents(
         feature,

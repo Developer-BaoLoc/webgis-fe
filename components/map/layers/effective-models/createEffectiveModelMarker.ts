@@ -1,16 +1,12 @@
-import L from 'leaflet';
-
+import { createPointMarker } from '../shared/createPointMarker';
 import { DEFAULT_MARKER_STYLE } from './markerStyles';
 
 export function createEffectiveModelMarker(
-  _feature: GeoJSON.Feature,
+  feature: GeoJSON.Feature,
   latlng: L.LatLngExpression,
 ) {
-  return L.circleMarker(
-    latlng,
-    {
-      ...DEFAULT_MARKER_STYLE,
-      pane: 'effective-models',
-    },
-  );
+  return createPointMarker(feature, latlng, {
+    pane: 'effective-models',
+    defaultStyle: DEFAULT_MARKER_STYLE,
+  });
 }

@@ -99,7 +99,7 @@ export function AuthProvider({
 
     setUser(null);
 
-    router.push('/login');
+    router.push('/');
   };
 
   return (

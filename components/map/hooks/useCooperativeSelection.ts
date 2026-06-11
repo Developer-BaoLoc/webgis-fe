@@ -1,66 +1,20 @@
-import {
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
-import type { CircleMarker } from 'leaflet';
-
+import usePointSelection from './usePointSelection';
 import type { SelectedCooperative } from '../layers/cooperatives/types';
 import {
-  applyDefaultMarkerStyle,
-  applySelectedMarkerStyle,
+  DEFAULT_MARKER_STYLE,
+  SELECTED_MARKER_STYLE,
 } from '../layers/cooperatives/markerStyles';
 
 export default function useCooperativeSelection() {
-  const [
-    selectedCooperative,
-    setSelectedCooperative,
-  ] = useState<SelectedCooperative | null>(
-    null,
-  );
-
-  const cooperativeLayersRef = useRef<
-    Record<number, CircleMarker>
-  >({});
-
-  const selectedLayerRef =
-    useRef<CircleMarker | null>(null);
-
-  const onSelectCooperative = useCallback(
-    (
-      cooperative: SelectedCooperative,
-      layer: CircleMarker,
-    ) => {
-      if (
-        selectedLayerRef.current &&
-        selectedLayerRef.current !== layer
-      ) {
-        applyDefaultMarkerStyle(
-          selectedLayerRef.current,
-        );
-        selectedLayerRef.current.closePopup();
-      }
-
-      setSelectedCooperative(cooperative);
-      selectedLayerRef.current = layer;
-      applySelectedMarkerStyle(layer);
-      layer.openPopup();
-    },
-    [],
-  );
-
-  const onClearSelection = useCallback(
-    (layer: CircleMarker) => {
-      if (selectedLayerRef.current !== layer) {
-        return;
-      }
-
-      applyDefaultMarkerStyle(layer);
-      selectedLayerRef.current = null;
-      setSelectedCooperative(null);
-    },
-    [],
-  );
+  const {
+    selectedItem: selectedCooperative,
+    layersRef: cooperativeLayersRef,
+    onSelect: onSelectCooperative,
+    onClearSelection,
+  } = usePointSelection<SelectedCooperative>({
+    defaultStyle: DEFAULT_MARKER_STYLE,
+    selectedStyle: SELECTED_MARKER_STYLE,
+  });
 
   return {
     selectedCooperative,

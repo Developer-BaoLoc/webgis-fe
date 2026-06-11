@@ -3,7 +3,7 @@ import {
   type MutableRefObject,
 } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import type { CircleMarker } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import { createIrrigationMarker } from './irrigations/createIrrigationMarker';
 import { attachIrrigationMarkerEvents } from './irrigations/markerEvents';
@@ -12,15 +12,13 @@ import type { SelectedIrrigation } from './irrigations/types';
 interface Props {
   irrigations: GeoJSON.FeatureCollection;
   irrigationLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectIrrigation: (
     irrigation: SelectedIrrigation,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
-  onClearSelection: (
-    layer: CircleMarker,
-  ) => void;
+  onClearSelection: (layer: Layer) => void;
 }
 
 export default function IrrigationLayer({
@@ -32,7 +30,7 @@ export default function IrrigationLayer({
   const onEachFeature = useCallback(
     (
       feature: GeoJSON.Feature,
-      layer: CircleMarker,
+      layer: Layer,
     ) => {
       attachIrrigationMarkerEvents(
         feature,

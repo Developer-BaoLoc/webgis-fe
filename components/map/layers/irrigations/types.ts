@@ -6,6 +6,8 @@ export interface SelectedIrrigation {
   business_type: string;
   phone: string;
   status: string;
+  icon?: string | null;
+  images?: string[];
 }
 
 export interface IrrigationProperties {
@@ -16,4 +18,6 @@ export interface IrrigationProperties {
   business_type: string;
   phone: string;
   status: string;
+  icon?: string | null;
+  images?: string[];
 }

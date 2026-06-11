@@ -7,6 +7,8 @@ export interface SelectedEffectiveModel {
   phone: string;
   status: string;
   type: string;
+  icon?: string | null;
+  images?: string[];
 }
 
 export interface EffectiveModelProperties {
@@ -18,4 +20,6 @@ export interface EffectiveModelProperties {
   phone: string;
   status: string;
   type: string;
+  icon?: string | null;
+  images?: string[];
 }

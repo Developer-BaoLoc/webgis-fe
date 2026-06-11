@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react';
-import type { CircleMarker } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import { buildCooperativePopupHtml } from './popup';
 import {
@@ -10,20 +10,20 @@ import type { SelectedCooperative } from './types';
 
 interface MarkerEventHandlers {
   cooperativeLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectCooperative: (
     cooperative: SelectedCooperative,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
   onClearSelection: (
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
 }
 
 export function attachCooperativeMarkerEvents(
   feature: GeoJSON.Feature,
-  layer: CircleMarker,
+  layer: Layer,
   handlers: MarkerEventHandlers,
 ) {
   const properties = toCooperativeProperties(
@@ -38,8 +38,6 @@ export function attachCooperativeMarkerEvents(
     buildCooperativePopupHtml(properties),
   );
 
-  layer.bringToFront();
-
   layer.on('click', () => {
     handlers.onSelectCooperative(
       toSelectedCooperative(properties),
@@ -50,5 +48,4 @@ export function attachCooperativeMarkerEvents(
   layer.on('popupclose', () => {
     handlers.onClearSelection(layer);
   });
-
 }

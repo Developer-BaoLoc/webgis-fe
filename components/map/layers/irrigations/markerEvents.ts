@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react';
-import type { CircleMarker } from 'leaflet';
+import type { Layer } from 'leaflet';
 
 import { buildIrrigationPopupHtml } from './popup';
 import {
@@ -10,20 +10,18 @@ import type { SelectedIrrigation } from './types';
 
 interface MarkerEventHandlers {
   irrigationLayersRef: MutableRefObject<
-    Record<number, CircleMarker>
+    Record<number, Layer>
   >;
   onSelectIrrigation: (
     irrigation: SelectedIrrigation,
-    layer: CircleMarker,
+    layer: Layer,
   ) => void;
-  onClearSelection: (
-    layer: CircleMarker,
-  ) => void;
+  onClearSelection: (layer: Layer) => void;
 }
 
 export function attachIrrigationMarkerEvents(
   feature: GeoJSON.Feature,
-  layer: CircleMarker,
+  layer: Layer,
   handlers: MarkerEventHandlers,
 ) {
   const properties = toIrrigationProperties(
@@ -37,9 +35,6 @@ export function attachIrrigationMarkerEvents(
   layer.bindPopup(
     buildIrrigationPopupHtml(properties),
   );
-
-  layer.bringToFront();
-
   layer.on('click', () => {
     handlers.onSelectIrrigation(
       toSelectedIrrigation(properties),

@@ -6,6 +6,8 @@ export interface SelectedCooperative {
   business_type: string;
   phone: string;
   status: string;
+  icon?: string | null;
+  images?: string[];
 }
 
 export interface CooperativeProperties {
@@ -16,4 +18,6 @@ export interface CooperativeProperties {
   business_type: string;
   phone: string;
   status: string;
+  icon?: string | null;
+  images?: string[];
 }

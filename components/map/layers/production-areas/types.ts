@@ -6,6 +6,7 @@ export interface SelectedProductionArea {
   business_type: string;
   phone: string;
   status: string;
+  images?: string[];
 }
 
 export interface ProductionAreaProperties {
@@ -16,4 +17,5 @@ export interface ProductionAreaProperties {
   business_type: string;
   phone: string;
   status: string;
+  images?: string[];
 }

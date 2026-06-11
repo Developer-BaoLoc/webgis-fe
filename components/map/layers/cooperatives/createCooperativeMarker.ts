@@ -1,15 +1,12 @@
-import L from 'leaflet';
+import { createPointMarker } from '../shared/createPointMarker';
 import { DEFAULT_MARKER_STYLE } from './markerStyles';
 
 export function createCooperativeMarker(
-  _feature: GeoJSON.Feature,
+  feature: GeoJSON.Feature,
   latlng: L.LatLngExpression,
 ) {
-  return L.circleMarker(
-    latlng,
-    {
-      ...DEFAULT_MARKER_STYLE,
-      pane: 'cooperatives',
-    },
-  );
+  return createPointMarker(feature, latlng, {
+    pane: 'cooperatives',
+    defaultStyle: DEFAULT_MARKER_STYLE,
+  });
 }

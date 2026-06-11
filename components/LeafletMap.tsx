@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-
 import UserPanel from "./auth/UserPanel";
 import SearchWardBox from "./map/SearchWardBox";
 
@@ -15,6 +13,7 @@ import useCurrentLocation from "./map/hooks/useCurrentLocation";
 import useWardSearch from "./map/hooks/useWardSearch";
 import useZoomToWard from "./map/hooks/useZoomToWard";
 import useCooperativeSelection from "./map/hooks/useCooperativeSelection";
+import useCooperativeGroupSelection from "./map/hooks/useCooperativeGroupSelection";
 import useIrrigationSelection from "./map/hooks/useIrrigationSelection";
 import useEffectiveModelSelection from "./map/hooks/useEffectiveModelSelection";
 import useOcopEntitySelection from "./map/hooks/useOcopEntitySelection";
@@ -26,8 +25,6 @@ import LayerControlPanel from "./map/LayerControlPanel";
 import { MapContainer, TileLayer, Pane } from "react-leaflet";
 
 export default function LeafletMap() {
-  const { user } = useAuth();
-
   const mapRef = useRef<any>(null);
   const wardLayersRef = useRef<Record<string, any>>({});
 
@@ -38,6 +35,7 @@ export default function LeafletMap() {
     roads,
     rivers,
     cooperatives,
+    cooperativeGroups,
     irrigations,
     effectiveModels,
     ocopEntities,
@@ -59,11 +57,16 @@ export default function LeafletMap() {
   const { selectedWardId, zoomToWard } = useZoomToWard(mapRef, wardLayersRef);
 
   const {
-    selectedCooperative,
     cooperativeLayersRef,
     onSelectCooperative,
     onClearSelection: onClearCooperativeSelection,
   } = useCooperativeSelection();
+
+  const {
+    cooperativeGroupLayersRef,
+    onSelectCooperativeGroup,
+    onClearSelection: onClearCooperativeGroupSelection,
+  } = useCooperativeGroupSelection();
 
   const {
     selectedIrrigation,
@@ -129,6 +132,10 @@ export default function LeafletMap() {
           style={{ zIndex: 650 }}
         />
         <Pane
+          name="cooperative-groups"
+          style={{ zIndex: 649 }}
+        />
+        <Pane
           name="irrigations"
           style={{ zIndex: 651 }}
         />
@@ -163,6 +170,7 @@ export default function LeafletMap() {
           roads={roads}
           rivers={rivers}
           cooperatives={cooperatives}
+          cooperativeGroups={cooperativeGroups}
           irrigations={irrigations}
           effectiveModels={effectiveModels}
           ocopEntities={ocopEntities}
@@ -173,6 +181,9 @@ export default function LeafletMap() {
           cooperativeLayersRef={cooperativeLayersRef}
           onSelectCooperative={onSelectCooperative}
           onClearCooperativeSelection={onClearCooperativeSelection}
+          cooperativeGroupLayersRef={cooperativeGroupLayersRef}
+          onSelectCooperativeGroup={onSelectCooperativeGroup}
+          onClearCooperativeGroupSelection={onClearCooperativeGroupSelection}
           irrigationLayersRef={irrigationLayersRef}
           onSelectIrrigation={onSelectIrrigation}
           onClearIrrigationSelection={onClearIrrigationSelection}

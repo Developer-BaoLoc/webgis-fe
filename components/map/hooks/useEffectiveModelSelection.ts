@@ -1,66 +1,20 @@
-import {
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
-import type { CircleMarker } from 'leaflet';
-
+import usePointSelection from './usePointSelection';
 import type { SelectedEffectiveModel } from '../layers/effective-models/types';
 import {
-  applyDefaultMarkerStyle,
-  applySelectedMarkerStyle,
+  DEFAULT_MARKER_STYLE,
+  SELECTED_MARKER_STYLE,
 } from '../layers/effective-models/markerStyles';
 
 export default function useEffectiveModelSelection() {
-  const [
-    selectedEffectiveModel,
-    setSelectedEffectiveModel,
-  ] = useState<SelectedEffectiveModel | null>(
-    null,
-  );
-
-  const effectiveModelLayersRef = useRef<
-    Record<number, CircleMarker>
-  >({});
-
-  const selectedLayerRef =
-    useRef<CircleMarker | null>(null);
-
-  const onSelectEffectiveModel = useCallback(
-    (
-      effectiveModel: SelectedEffectiveModel,
-      layer: CircleMarker,
-    ) => {
-      if (
-        selectedLayerRef.current &&
-        selectedLayerRef.current !== layer
-      ) {
-        applyDefaultMarkerStyle(
-          selectedLayerRef.current,
-        );
-        selectedLayerRef.current.closePopup();
-      }
-
-      setSelectedEffectiveModel(effectiveModel);
-      selectedLayerRef.current = layer;
-      applySelectedMarkerStyle(layer);
-      layer.openPopup();
-    },
-    [],
-  );
-
-  const onClearSelection = useCallback(
-    (layer: CircleMarker) => {
-      if (selectedLayerRef.current !== layer) {
-        return;
-      }
-
-      applyDefaultMarkerStyle(layer);
-      selectedLayerRef.current = null;
-      setSelectedEffectiveModel(null);
-    },
-    [],
-  );
+  const {
+    selectedItem: selectedEffectiveModel,
+    layersRef: effectiveModelLayersRef,
+    onSelect: onSelectEffectiveModel,
+    onClearSelection,
+  } = usePointSelection<SelectedEffectiveModel>({
+    defaultStyle: DEFAULT_MARKER_STYLE,
+    selectedStyle: SELECTED_MARKER_STYLE,
+  });
 
   return {
     selectedEffectiveModel,

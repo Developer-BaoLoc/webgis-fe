@@ -14,6 +14,8 @@ export function toCooperativeProperties(
     business_type: properties.business_type as string,
     phone: properties.phone as string,
     status: properties.status as string,
+    icon: properties.icon as string | null,
+    images: (properties.images as string[]) ?? [],
   };
 }
 
@@ -28,5 +30,7 @@ export function toSelectedCooperative(
     business_type: properties.business_type,
     phone: properties.phone,
     status: properties.status,
+    icon: properties.icon,
+    images: properties.images,
   };
 }

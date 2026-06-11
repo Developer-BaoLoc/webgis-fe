@@ -14,19 +14,13 @@ export function toIrrigationProperties(
     business_type: properties.business_type as string,
     phone: properties.phone as string,
     status: properties.status as string,
+    icon: properties.icon as string | null,
+    images: (properties.images as string[]) ?? [],
   };
 }
 
 export function toSelectedIrrigation(
   properties: IrrigationProperties,
 ): SelectedIrrigation {
-  return {
-    id: properties.id,
-    name: properties.name,
-    representative: properties.representative,
-    address: properties.address,
-    business_type: properties.business_type,
-    phone: properties.phone,
-    status: properties.status,
-  };
+  return { ...properties };
 }
