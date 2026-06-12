@@ -60,114 +60,43 @@ try {
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 16,
-        }}
-      >
-        <h1 style={{ margin: 0 }}>
-          {config.label} </h1>
+      <div className="admin-header">
+        <h1>{config.label}</h1>
 
-        ```
         <Link
           href={`/admin/${config.key}/new`}
-          style={{
-            padding: '10px 14px',
-            background: '#2563eb',
-            color: '#fff',
-            borderRadius: 8,
-            textDecoration: 'none',
-          }}
+          className="btn btn-primary"
         >
           Create
         </Link>
       </div>
 
-      <div
-        style={{
-          background: '#fff',
-          borderRadius: 12,
-          overflow: 'auto',
-          border: '1px solid #e5e7eb',
-        }}
-      >
-        <table
-          style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-          }}
-        >
+      <div className="entity-table-wrapper">
+        <table className="entity-table">
           <thead>
             <tr>
-              <th
-                style={{
-                  textAlign: 'left',
-                  padding: 12,
-                  borderBottom:
-                    '1px solid #e5e7eb',
-                  background: '#f9fafb',
-                }}
-              >
-                STT
-              </th>
+              <th>STT</th>
 
               {config.listColumns.map(
                 (column) => (
-                  <th
-                    key={column}
-                    style={{
-                      textAlign: 'left',
-                      padding: 12,
-                      borderBottom:
-                        '1px solid #e5e7eb',
-                      background: '#f9fafb',
-                    }}
-                  >
+                  <th key={column}>
                     {column}
                   </th>
                 ),
               )}
 
-              <th
-                style={{
-                  textAlign: 'left',
-                  padding: 12,
-                  borderBottom:
-                    '1px solid #e5e7eb',
-                  background: '#f9fafb',
-                }}
-              >
-                Actions
-              </th>
+              <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {rows.map((row, index) => (
               <tr key={String(row.id)}>
-                <td
-                  style={{
-                    padding: 12,
-                    borderBottom:
-                      '1px solid #f3f4f6',
-                  }}
-                >
-                  {index + 1}
-                </td>
+                <td>{index + 1}</td>
 
                 {config.listColumns.map(
                   (column) => (
-                    <td
-                      key={column}
-                      style={{
-                        padding: 12,
-                        borderBottom:
-                          '1px solid #f3f4f6',
-                      }}
-                    >
+                    <td key={column}>
                       {String(
                         row[column] ?? '',
                       )}
@@ -175,29 +104,24 @@ try {
                   ),
                 )}
 
-                <td
-                  style={{
-                    padding: 12,
-                    borderBottom:
-                      '1px solid #f3f4f6',
-                  }}
-                >
-                  <Link
-                    href={`/admin/${config.key}/${row.id}`}
-                    style={{
-                      marginRight: 12,
-                    }}
-                  >
-                    Edit
-                  </Link>
+                <td>
+                  <div className="entity-table-actions">
+                    <Link
+                      href={`/admin/${config.key}/${row.id}`}
+                      className="btn btn-secondary btn-small"
+                    >
+                      Edit
+                    </Link>
 
-                  <button
-                    onClick={() =>
-                      setDeleteRow(row)
-                    }
-                  >
-                    Delete
-                  </button>
+                    <button
+                      className="btn btn-danger btn-small"
+                      onClick={() =>
+                        setDeleteRow(row)
+                      }
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -220,5 +144,5 @@ try {
         loading={deleting}
       />
     </>
-);
+  );
 }
