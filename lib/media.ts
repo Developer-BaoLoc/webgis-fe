@@ -22,6 +22,9 @@ export interface MediaRecord {
   id: number;
   entity_type: string;
   entity_id: number;
+
+  entity_name?: string;
+
   file_type: 'icon' | 'image';
   file_url: string;
   original_name?: string;
