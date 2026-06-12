@@ -23,14 +23,19 @@ export function createPointMarker(
       options.defaultIconSize ?? [32, 32];
     const resolvedUrl = resolveMediaUrl(iconUrl);
 
+    console.log(
+      'RESOLVED ICON URL',
+      resolvedUrl,
+    );
+
     const marker = L.marker(latlng, {
-      pane: options.pane,
+      // pane: 'options.pane',
       icon: L.icon({
         iconUrl: resolvedUrl,
         iconSize: size,
         iconAnchor: [size[0] / 2, size[1]],
-        popupAnchor: [0, -size[1] + 4],
-      }),
+        popupAnchor: [32, 32],
+      })
     });
 
     // Add error listener to log failed icon loads for debugging
