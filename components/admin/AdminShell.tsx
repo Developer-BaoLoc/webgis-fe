@@ -33,7 +33,7 @@ export default function AdminShell({
         }}
       >
         <h2 style={{ marginTop: 0 }}>
-          WebGIS Admin
+          WebGIS Quản trị
         </h2>
         <Link
           href="/"
@@ -43,7 +43,7 @@ export default function AdminShell({
             marginBottom: 20,
           }}
         >
-          Back to Map
+          Quay lại bản đồ
         </Link>
         <nav
           style={{
@@ -65,7 +65,7 @@ export default function AdminShell({
                   : 400,
             }}
           >
-            Overview
+            Tổng quan
           </Link>
           {ADMIN_ENTITIES.map((entity) => {
             const active = pathname.startsWith(
@@ -104,7 +104,7 @@ export default function AdminShell({
                 : 400,
             }}
           >
-            Media
+            Phương tiện
           </Link>
         </nav>
       </aside>

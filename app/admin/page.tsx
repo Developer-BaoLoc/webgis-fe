@@ -6,11 +6,10 @@ import { ADMIN_ENTITIES } from '@/lib/admin/entities';
 
 export default function AdminOverviewPage() {
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
+    <div className="admin-container">
+      <h1>Bảng Điều Khiển Quản Trị</h1>
       <p>
-        Manage GIS entities, media assets, and map
-        content from the sections below.
+        Quản lý các thực thể GIS, tài sản phương tiện, và nội dung bản đồ từ các phần dưới đây.
       </p>
       <div
         style={{
@@ -48,7 +47,7 @@ export default function AdminOverviewPage() {
             color: '#111827',
           }}
         >
-          <strong>Media</strong>
+          <strong>Phương Tiện</strong>
         </Link>
       </div>
     </div>

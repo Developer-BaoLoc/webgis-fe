@@ -22,49 +22,25 @@ export default function DeleteConfirmModal({
   }
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.45)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 10000,
-      }}
-    >
-      <div
-        style={{
-          background: '#fff',
-          borderRadius: 12,
-          padding: 24,
-          width: 'min(420px, 90vw)',
-        }}
-      >
-        <h3 style={{ marginTop: 0 }}>{title}</h3>
-        <p>{message}</p>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 8,
-          }}
-        >
-          <button onClick={onCancel}>
-            Cancel
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2>{title}</h2>
+        </div>
+        <div className="modal-body">{message}</div>
+        <div className="modal-footer">
+          <button
+            onClick={onCancel}
+            className="btn btn-secondary"
+          >
+            Hủy
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            style={{
-              background: '#dc2626',
-              color: '#fff',
-              border: 'none',
-              padding: '8px 12px',
-              borderRadius: 8,
-            }}
+            className="btn btn-danger"
           >
-            {loading ? 'Deleting...' : 'Delete'}
+            {loading ? 'Đang xóa...' : 'Xóa'}
           </button>
         </div>
       </div>

@@ -89,18 +89,18 @@ export default function AdminEntityEditPage() {
   }
 
   if (!record) {
-    return <p>Loading...</p>;
+    return <p>Đang tải...</p>;
   }
 
   return (
     <div>
       <h1>
-        Edit {config.label.slice(0, -1)} #{id}
+        Chỉnh sửa {config.label} #{id}
       </h1>
       <EntityForm
         config={config}
         initialValues={record}
-        submitLabel="Save changes"
+        submitLabel="Lưu thay đổi"
         onSubmit={handleSubmit}
       />
       <MediaManager

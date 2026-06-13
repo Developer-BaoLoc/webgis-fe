@@ -48,9 +48,18 @@ export default function AdminMediaPage() {
     }
   };
 
+  const columnLabels: Record<string, string> = {
+    'id': 'ID',
+    'entity_type': 'Loại thực thể',
+    'entity_id': 'ID thực thể',
+    'file_type': 'Loại tệp',
+    'preview': 'Xem trước',
+    'original_name': 'Tên tệp',
+  };
+
   return (
     <div>
-      <h1>Media</h1>
+      <h1>Phương tiện</h1>
       <div
         style={{
           background: '#fff',
@@ -85,10 +94,16 @@ export default function AdminMediaPage() {
                     background: '#f9fafb',
                   }}
                 >
-                  {column}
+                  {columnLabels[column]}
                 </th>
               ))}
-              <th>Actions</th>
+              <th style={{
+                textAlign: 'left',
+                padding: 12,
+                borderBottom:
+                  '1px solid #e5e7eb',
+                background: '#f9fafb',
+              }}>Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -129,7 +144,7 @@ export default function AdminMediaPage() {
                       setDeleteId(item.id)
                     }
                   >
-                    Delete
+                    Xóa
                   </button>
                 </td>
               </tr>
@@ -140,8 +155,8 @@ export default function AdminMediaPage() {
 
       <DeleteConfirmModal
         open={deleteId !== null}
-        title="Delete media"
-        message="This will remove the file from storage."
+        title="Xóa phương tiện"
+        message="Hành động này sẽ xóa tệp khỏi bộ nhớ."
         onCancel={() => setDeleteId(null)}
         onConfirm={confirmDelete}
         loading={deleting}

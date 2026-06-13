@@ -24,11 +24,14 @@ import LayerControlPanel from "./map/LayerControlPanel";
 
 import { MapContainer, TileLayer, Pane } from "react-leaflet";
 
+const LONG_BINH_WARD_NAME = "Long Bình";
+
 export default function LeafletMap() {
   const mapRef = useRef<any>(null);
   const wardLayersRef = useRef<Record<string, any>>({});
 
   const [zoom, setZoom] = useState(11);
+  const [autoZoomedToLongBinh, setAutoZoomedToLongBinh] = useState(false);
 
   const {
     wards,
@@ -103,6 +106,19 @@ export default function LeafletMap() {
     loadRivers();
   }, [wards, loadRoads, loadRivers]);
 
+  // Auto-zoom to Long Bình on mount
+  useEffect(() => {
+    if (wards && !autoZoomedToLongBinh && wardLayersRef.current[LONG_BINH_WARD_NAME]) {
+      const longBinhFeature = wards.features.find(
+        (f: any) => f.properties.name === LONG_BINH_WARD_NAME
+      );
+      if (longBinhFeature) {
+        zoomToWard(longBinhFeature, () => { });
+        setAutoZoomedToLongBinh(true);
+      }
+    }
+  }, [wards, autoZoomedToLongBinh, zoomToWard]);
+
   return (
     <>
       <UserPanel />
@@ -125,7 +141,9 @@ export default function LeafletMap() {
 
         <ZoomTracker onZoomChange={setZoom} />
 
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer
+  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+/>
 
         <Pane
           name="cooperatives"
@@ -147,16 +165,16 @@ export default function LeafletMap() {
           name="ocop-entities"
           style={{ zIndex: 653 }}
         />
-        
-        <Pane
-  name="wards"
-  style={{ zIndex: 300 }}
-/>
 
-<Pane
-  name="production-areas"
-  style={{ zIndex: 500 }}
-/>
+        <Pane
+          name="wards"
+          style={{ zIndex: 300 }}
+        />
+
+        <Pane
+          name="production-areas"
+          style={{ zIndex: 500 }}
+        />
 
         {currentLocation && (
           <CurrentLocationMarker

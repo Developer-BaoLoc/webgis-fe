@@ -7,10 +7,14 @@ export interface AdminField {
   key: string;
   label: string;
   type?:
-    | 'text'
-    | 'textarea'
-    | 'number';
+  | 'text'
+  | 'textarea'
+  | 'number'
+  | 'select';
   required?: boolean;
+  placeholder?: string;
+  options?: Array<{ label: string; value: string }>;
+  unit?: string;
 }
 
 function field(
@@ -18,11 +22,20 @@ function field(
   label: string,
   options: Pick<
     AdminField,
-    'type' | 'required'
+    'type' | 'required' | 'placeholder' | 'unit'
   > = {},
 ): AdminField {
   return { key, label, ...options };
 }
+
+// Status options
+const STATUS_OPTIONS = [
+  { label: 'Đang hoạt động', value: 'Đang hoạt động' },
+  { label: 'Ngưng hoạt động', value: 'Ngưng hoạt động' },
+  { label: 'Tạm ngưng hoạt động', value: 'Tạm ngưng hoạt động' },
+  { label: 'Hoạt động theo mùa (Hiện đang ngưng)', value: 'Hoạt động theo mùa (Hiện đang ngưng)' },
+  { label: 'Hoạt động theo mùa (Hiện đang hoạt động)', value: 'Hoạt động theo mùa (Hiện đang hoạt động)' },
+];
 
 function agricultureFields(
   numeric = false,
@@ -30,36 +43,38 @@ function agricultureFields(
   const numericType = numeric ? 'number' : 'text';
 
   return [
-    field('name', 'Name', { required: true }),
-    field('representative', 'Representative'),
-    field('address', 'Address', { type: 'textarea' }),
-    field('business_type', 'Business Type'),
-    field('area_ha', 'Area (ha)', { type: numericType }),
-    field('production_process', 'Production Process', {
+    field('name', 'Tên', { required: true }),
+    field('representative', 'Người đại diện', { required: true }),
+    field('address', 'Địa chỉ', { type: 'select', required: true }),
+    field('business_type', 'Loại hình kinh doanh'),
+    field('area_ha', 'Diện tích', { type: numericType, placeholder: 'nhập số, đơn vị: m2 hoặc ha' }),
+    field('production_process', 'Quy trình sản xuất', {
       type: 'textarea',
     }),
-    field('members', 'Members', {
+    field('members', 'Số thành viên', {
       type: numeric ? 'number' : 'text',
     }),
-    field('production', 'Production', { type: 'textarea' }),
-    field('sales_channel', 'Sales Channel', {
+    field('production', 'Sản lượng', { type: 'textarea', placeholder: 'tấn hoặc ha' }),
+    field('sales_channel', 'Kênh tiêu thụ', {
       type: 'textarea',
     }),
-    field('annual_cost', 'Annual Cost', { type: numericType }),
-    field('annual_income', 'Annual Income', {
+    field('annual_cost', 'Chi phí/năm', { type: numericType, unit: 'triệu đồng' }),
+    field('annual_income', 'Thu nhập/năm', {
       type: numericType,
+      unit: 'triệu đồng',
     }),
-    field('annual_profit', 'Annual Profit', {
+    field('annual_profit', 'Lợi nhuận/năm', {
       type: numericType,
+      unit: 'triệu đồng',
     }),
-    field('phone', 'Phone'),
-    field('status', 'Status'),
-    field('note', 'Note', { type: 'textarea' }),
-    field('latitude', 'Latitude', {
+    field('phone', 'Điện thoại'),
+    field('status', 'Trạng thái', { type: 'select', required: true }),
+    field('note', 'Ghi chú', { type: 'textarea' }),
+    field('latitude', 'Vĩ độ', {
       type: 'number',
       required: true,
     }),
-    field('longitude', 'Longitude', {
+    field('longitude', 'Kinh độ', {
       type: 'number',
       required: true,
     }),
@@ -79,7 +94,7 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
   [
     {
       key: 'cooperatives',
-      label: 'Cooperatives',
+      label: 'Hợp tác xã',
       mediaEntityType: 'cooperative',
       geometry: 'point',
       listColumns: [
@@ -88,11 +103,16 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
         'phone',
         'status',
       ],
-      fields: agricultureFields(true),
+      fields: agricultureFields(true).map(f => {
+        if (f.key === 'status' || f.key === 'address') {
+          return { ...f, options: f.key === 'status' ? STATUS_OPTIONS : undefined };
+        }
+        return f;
+      }),
     },
     {
       key: 'cooperative-groups',
-      label: 'Cooperative Groups',
+      label: 'Tổ hợp tác xã',
       mediaEntityType: 'cooperative_group',
       geometry: 'point',
       listColumns: [
@@ -101,11 +121,16 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
         'phone',
         'status',
       ],
-      fields: agricultureFields(),
+      fields: agricultureFields().map(f => {
+        if (f.key === 'status' || f.key === 'address') {
+          return { ...f, options: f.key === 'status' ? STATUS_OPTIONS : undefined };
+        }
+        return f;
+      }),
     },
     {
       key: 'irrigations',
-      label: 'Irrigations',
+      label: 'Thủy lợi',
       mediaEntityType: 'irrigation',
       geometry: 'point',
       listColumns: [
@@ -114,11 +139,16 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
         'phone',
         'status',
       ],
-      fields: agricultureFields(),
+      fields: agricultureFields().map(f => {
+        if (f.key === 'status' || f.key === 'address') {
+          return { ...f, options: f.key === 'status' ? STATUS_OPTIONS : undefined };
+        }
+        return f;
+      }),
     },
     {
       key: 'effective-models',
-      label: 'Effective Models',
+      label: 'Mô hình hiệu quả',
       mediaEntityType: 'effective_model',
       geometry: 'point',
       listColumns: [
@@ -128,13 +158,18 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
         'status',
       ],
       fields: [
-        ...agricultureFields(),
-        field('type', 'Type'),
+        ...agricultureFields().map(f => {
+          if (f.key === 'status' || f.key === 'address') {
+            return { ...f, options: f.key === 'status' ? STATUS_OPTIONS : undefined };
+          }
+          return f;
+        }),
+        field('type', 'Loại mô hình'),
       ],
     },
     {
       key: 'ocop-entities',
-      label: 'OCOP Entities',
+      label: 'Sản phẩm OCOP',
       mediaEntityType: 'ocop_entity',
       geometry: 'point',
       listColumns: [
@@ -144,17 +179,17 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
         'status',
       ],
       fields: [
-        field('name', 'Name', { required: true }),
-        field('representative', 'Representative'),
-        field('address', 'Address', { type: 'textarea' }),
-        field('phone', 'Phone'),
-        field('status', 'Status'),
-        field('note', 'Note', { type: 'textarea' }),
-        field('latitude', 'Latitude', {
+        field('name', 'Tên', { required: true }),
+        field('representative', 'Người đại diện', { required: true }),
+        field('address', 'Địa chỉ', { type: 'select', required: true }),
+        field('phone', 'Điện thoại'),
+        field('status', 'Trạng thái', { type: 'select', required: true, options: STATUS_OPTIONS }),
+        field('note', 'Ghi chú', { type: 'textarea' }),
+        field('latitude', 'Vĩ độ', {
           type: 'number',
           required: true,
         }),
-        field('longitude', 'Longitude', {
+        field('longitude', 'Kinh độ', {
           type: 'number',
           required: true,
         }),
@@ -162,7 +197,7 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
     },
     {
       key: 'ocop-products',
-      label: 'OCOP Products',
+      label: 'Chi tiết sản phẩm OCOP',
       mediaEntityType: 'ocop_product',
       geometry: 'none',
       listColumns: [
@@ -172,31 +207,31 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
         'business_type',
       ],
       fields: [
-        field('product_name', 'Product Name', {
+        field('product_name', 'Tên sản phẩm', {
           required: true,
         }),
-        field('entity_id', 'OCOP Entity ID', {
+        field('entity_id', 'ID thực thể OCOP', {
           type: 'number',
           required: true,
         }),
-        field('ranking', 'Ranking'),
-        field('business_type', 'Business Type'),
-        field('area_ha', 'Area (ha)'),
-        field('production_process', 'Production Process', {
+        field('ranking', 'Xếp hạng'),
+        field('business_type', 'Loại hình kinh doanh'),
+        field('area_ha', 'Diện tích', { type: 'number', placeholder: 'nhập số, đơn vị: m2 hoặc ha' }),
+        field('production_process', 'Quy trình sản xuất', {
           type: 'textarea',
         }),
-        field('production', 'Production', { type: 'textarea' }),
-        field('sales_channel', 'Sales Channel', {
+        field('production', 'Sản lượng', { type: 'textarea', placeholder: 'tấn hoặc ha' }),
+        field('sales_channel', 'Kênh tiêu thụ', {
           type: 'textarea',
         }),
-        field('annual_cost', 'Annual Cost'),
-        field('annual_income', 'Annual Income'),
-        field('annual_profit', 'Annual Profit'),
+        field('annual_cost', 'Chi phí/năm', { type: 'number', unit: 'triệu đồng' }),
+        field('annual_income', 'Thu nhập/năm', { type: 'number', unit: 'triệu đồng' }),
+        field('annual_profit', 'Lợi nhuận/năm', { type: 'number', unit: 'triệu đồng' }),
       ],
     },
     {
       key: 'production-areas',
-      label: 'Production Areas',
+      label: 'Khu vực sản xuất',
       mediaEntityType: 'production_area',
       geometry: 'polygon',
       listColumns: [
@@ -210,8 +245,13 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
           (item) =>
             item.key !== 'latitude' &&
             item.key !== 'longitude',
-        ),
-        field('geomGeoJson', 'Polygon GeoJSON', {
+        ).map(f => {
+          if (f.key === 'status' || f.key === 'address') {
+            return { ...f, options: f.key === 'status' ? STATUS_OPTIONS : undefined };
+          }
+          return f;
+        }),
+        field('geomGeoJson', 'GeoJSON Polygon', {
           type: 'textarea',
           required: true,
         }),
