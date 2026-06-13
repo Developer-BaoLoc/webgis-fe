@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import type { AdminEntityConfig } from '@/lib/admin/entities';
+import type { AdminEntityConfig, AdminField } from '@/lib/admin/entities';
 import { getErrorMessage } from '@/lib/fetchWithAuth';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
+import { api } from '@/lib/api';
 
 interface Props {
   config: AdminEntityConfig;
@@ -42,6 +44,10 @@ export default function EntityForm({
     Record<string, string>
   >(memoizedInitialValues);
 
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
+
   useEffect(() => {
     setValues(memoizedInitialValues);
   }, [memoizedInitialValues]);
@@ -52,10 +58,51 @@ export default function EntityForm({
   const [saving, setSaving] =
     useState(false);
 
+  const [addressOptions, setAddressOptions] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
+
+  // Load address options on mount
+  useEffect(() => {
+    const loadAddresses = async () => {
+      try {
+        const wards = await fetchWithAuth(api.wards);
+        if (Array.isArray(wards.features)) {
+          const options = wards.features.map((f: any) => ({
+            label: f.properties.name,
+            value: f.properties.name,
+          }));
+          setAddressOptions(options);
+        }
+      } catch (err) {
+        console.error('Failed to load addresses:', err);
+      }
+    };
+    loadAddresses();
+  }, []);
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    config.fields.forEach((field) => {
+      if (field.required && !values[field.key]?.trim()) {
+        errors[field.key] = `${field.label} là bắt buộc`;
+      }
+    });
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (
     event: React.FormEvent,
   ) => {
     event.preventDefault();
+
+    if (!validateForm()) {
+      setError('Vui lòng điền tất cả các trường bắt buộc');
+      return;
+    }
 
     setSaving(true);
     setError('');
@@ -104,152 +151,147 @@ export default function EntityForm({
     }
   };
 
+  const renderFieldInput = (field: AdminField) => {
+    const value = values[field.key] ?? '';
+    const hasError = validationErrors[field.key];
+
+    if (field.type === 'textarea') {
+      return (
+        <>
+          <textarea
+            value={value}
+            onChange={(event) =>
+              setValues((current) => ({
+                ...current,
+                [field.key]: event.target.value,
+              }))
+            }
+            placeholder={field.placeholder}
+            rows={
+              field.key === 'geomGeoJson'
+                ? 8
+                : 4
+            }
+            required={field.required}
+            style={{
+              borderColor: hasError ? '#dc2626' : undefined,
+            }}
+          />
+          {hasError && (
+            <span className="form-error">{hasError}</span>
+          )}
+        </>
+      );
+    }
+
+    if (field.type === 'select') {
+      const selectOptions = field.key === 'address'
+        ? addressOptions
+        : field.options || [];
+
+      return (
+        <>
+          <select
+            value={value}
+            onChange={(event) =>
+              setValues((current) => ({
+                ...current,
+                [field.key]: event.target.value,
+              }))
+            }
+            required={field.required}
+            style={{
+              borderColor: hasError ? '#dc2626' : undefined,
+            }}
+          >
+            <option value="">-- Chọn {field.label} --</option>
+            {selectOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          {hasError && (
+            <span className="form-error">{hasError}</span>
+          )}
+        </>
+      );
+    }
+
+    return (
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <input
+          type={field.type ?? 'text'}
+          value={value}
+          onChange={(event) =>
+            setValues((current) => ({
+              ...current,
+              [field.key]: event.target.value,
+            }))
+          }
+          placeholder={field.placeholder}
+          required={field.required}
+          step={
+            field.type === 'number'
+              ? 'any'
+              : undefined
+          }
+          style={{
+            flex: 1,
+            borderColor: hasError ? '#dc2626' : undefined,
+          }}
+        />
+        {field.unit && (
+          <span style={{ whiteSpace: 'nowrap', color: '#666' }}>
+            {field.unit}
+          </span>
+        )}
+        {hasError && (
+          <span className="form-error" style={{ gridColumn: '1 / -1' }}>{hasError}</span>
+        )}
+      </div>
+    );
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
-      style={{
-        display: 'grid',
-        gap: 16,
-        maxWidth: 900,
-        paddingBottom: 24,
-      }}
+      className="admin-form"
     >
       {error && (
-        <p
-          style={{
-            color: '#dc2626',
-          }}
-        >
+        <div className="form-error-message">
           {error}
-        </p>
+        </div>
       )}
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns:
-            'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: 16,
-        }}
-      >
-        {config.fields.map(
-          (field) => (
-            <label
-              key={field.key}
-              style={{
-                display: 'grid',
-                gap: 6,
-                gridColumn:
-                  field.type ===
-                  'textarea'
-                    ? '1 / -1'
-                    : undefined,
-              }}
-            >
-              <span>
-                {field.label}
-                {field.required
-                  ? ' *'
-                  : ''}
-              </span>
+      <div className="form-grid">
+        {config.fields.map((field) => (
+          <label
+            key={field.key}
+            className={`form-group ${field.type === 'textarea'
+                ? 'full-width'
+                : ''
+              }`}
+          >
+            <span>
+              {field.label}
+              {field.required
+                ? <span className="required">*</span>
+                : ''}
+            </span>
 
-              {field.type ===
-              'textarea' ? (
-                <textarea
-                  value={
-                    values[
-                      field.key
-                    ] ?? ''
-                  }
-                  onChange={(
-                    event,
-                  ) =>
-                    setValues(
-                      (
-                        current,
-                      ) => ({
-                        ...current,
-                        [field.key]:
-                          event
-                            .target
-                            .value,
-                      }),
-                    )
-                  }
-                  rows={
-                    field.key ===
-                    'geomGeoJson'
-                      ? 8
-                      : 4
-                  }
-                  required={
-                    field.required
-                  }
-                />
-              ) : (
-                <input
-                  type={
-                    field.type ??
-                    'text'
-                  }
-                  value={
-                    values[
-                      field.key
-                    ] ?? ''
-                  }
-                  onChange={(
-                    event,
-                  ) =>
-                    setValues(
-                      (
-                        current,
-                      ) => ({
-                        ...current,
-                        [field.key]:
-                          event
-                            .target
-                            .value,
-                      }),
-                    )
-                  }
-                  required={
-                    field.required
-                  }
-                  step={
-                    field.type ===
-                    'number'
-                      ? 'any'
-                      : undefined
-                  }
-                />
-              )}
-            </label>
-          ),
-        )}
+            {renderFieldInput(field)}
+          </label>
+        ))}
       </div>
 
       <button
         type="submit"
         disabled={saving}
-        style={{
-          width: 'fit-content',
-          padding:
-            '10px 16px',
-          background:
-            '#2563eb',
-          color: '#fff',
-          border: 'none',
-          borderRadius: 8,
-          cursor: saving
-            ? 'not-allowed'
-            : 'pointer',
-          opacity: saving
-            ? 0.7
-            : 1,
-        }}
+        className="btn btn-primary"
       >
         {saving
-          ? 'Saving...'
+          ? 'Đang lưu...'
           : submitLabel}
       </button>
     </form>
@@ -272,7 +314,7 @@ function buildFormValues(
     (field) => {
       const value =
         initialValues[
-          field.key
+        field.key
         ];
 
       if (
@@ -284,10 +326,10 @@ function buildFormValues(
 
         next[field.key] = geom
           ? JSON.stringify(
-              geom,
-              null,
-              2,
-            )
+            geom,
+            null,
+            2,
+          )
           : '';
 
         return;
@@ -295,7 +337,7 @@ function buildFormValues(
 
       next[field.key] =
         value !== undefined &&
-        value !== null
+          value !== null
           ? String(value)
           : '';
     },

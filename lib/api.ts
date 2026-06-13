@@ -37,4 +37,9 @@ export const api = {
     lng: number,
   ) =>
     `${API_URL}/wards/current?lat=${lat}&lng=${lng}`,
+  
+  // Address/location endpoints
+  wards: `${API_URL}/wards`,
+  districts: `${API_URL}/districts`,
+  provinces: `${API_URL}/provinces`,
 };

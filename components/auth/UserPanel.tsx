@@ -34,7 +34,7 @@ export default function UserPanel() {
               marginBottom: 10,
             }}
           >
-            Not logged in
+            Chưa đăng nhập
           </div>
           <Link
             href="/login"
@@ -48,7 +48,7 @@ export default function UserPanel() {
               textDecoration: 'none',
             }}
           >
-            Login
+            Đăng nhập
           </Link>
         </>
       ) : (
@@ -62,7 +62,7 @@ export default function UserPanel() {
               color: '#666',
             }}
           >
-            Role: {user.role}
+            Vai trò: {user.role === 'ADMIN' ? 'Quản trị viên' : user.role}
           </div>
           {user.role === 'ADMIN' && (
             <Link
@@ -78,7 +78,7 @@ export default function UserPanel() {
                 textDecoration: 'none',
               }}
             >
-              Dashboard
+              Bảng điều khiển
             </Link>
           )}
           <button
@@ -88,7 +88,7 @@ export default function UserPanel() {
               width: '100%',
             }}
           >
-            Logout
+            Đăng xuất
           </button>
         </>
       )}

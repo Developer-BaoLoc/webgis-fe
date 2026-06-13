@@ -35,27 +35,27 @@ export default function EntityTable({
     }
 
 
-setDeleting(true);
+    setDeleting(true);
 
-try {
-  await onDelete(Number(deleteRow.id));
+    try {
+      await onDelete(Number(deleteRow.id));
 
-  success(
-    'Xóa thành công',
-    `${ getEntityDisplayName(deleteRow) } đã được xóa`,
-  );
+      success(
+        'Xóa thành công',
+        `${getEntityDisplayName(deleteRow)} đã được xóa`,
+      );
 
-  setDeleteRow(null);
-} catch (err) {
-  error(
-    'Xóa thất bại',
-    err instanceof Error
-      ? err.message
-      : String(err),
-  );
-} finally {
-  setDeleting(false);
-}
+      setDeleteRow(null);
+    } catch (err) {
+      error(
+        'Xóa thất bại',
+        err instanceof Error
+          ? err.message
+          : String(err),
+      );
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -67,7 +67,7 @@ try {
           href={`/admin/${config.key}/new`}
           className="btn btn-primary"
         >
-          Create
+          Thêm mới
         </Link>
       </div>
 
@@ -85,7 +85,7 @@ try {
                 ),
               )}
 
-              <th>Actions</th>
+              <th>Hành động</th>
             </tr>
           </thead>
 
@@ -110,7 +110,7 @@ try {
                       href={`/admin/${config.key}/${row.id}`}
                       className="btn btn-secondary btn-small"
                     >
-                      Edit
+                      Chỉnh sửa
                     </Link>
 
                     <button
@@ -119,7 +119,7 @@ try {
                         setDeleteRow(row)
                       }
                     >
-                      Delete
+                      Xóa
                     </button>
                   </div>
                 </td>
@@ -135,7 +135,7 @@ try {
         message={
           deleteRow
             ? `${getEntityDisplayName(deleteRow)} sẽ bị xóa. Hành động này không thể hoàn tác.`
-            : 'This action cannot be undone.'
+            : 'Hành động này không thể hoàn tác.'
         }
         onCancel={() =>
           setDeleteRow(null)

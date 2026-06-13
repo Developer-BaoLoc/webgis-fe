@@ -57,10 +57,10 @@ export default function AdminEntityCreatePage() {
 
   return (
     <div>
-      <h1>Create {config.label.slice(0, -1)}</h1>
+      <h1>Tạo mới {config.label}</h1>
       <EntityForm
         config={config}
-        submitLabel="Create"
+        submitLabel="Tạo"
         onSubmit={handleSubmit}
       />
     </div>
