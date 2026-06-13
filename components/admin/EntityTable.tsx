@@ -107,10 +107,17 @@ export default function EntityTable({
                 <td>
                   <div className="entity-table-actions">
                     <Link
-                      href={`/admin/${config.key}/${row.id}`}
+                      href={`/admin/${config.key}/view/${row.id}`}
                       className="btn btn-secondary btn-small"
                     >
-                      Chỉnh sửa
+                      Xem
+                    </Link>
+
+                    <Link
+                      href={`/admin/${config.key}/${row.id}/edit`}
+                      className="btn btn-secondary btn-small"
+                    >
+                      Sửa
                     </Link>
 
                     <button
