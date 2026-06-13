@@ -47,24 +47,24 @@ function agricultureFields(
     field('representative', 'Người đại diện', { required: true }),
     field('address', 'Địa chỉ', { type: 'select', required: true }),
     field('business_type', 'Loại hình kinh doanh'),
-    field('area_ha', 'Diện tích', { type: numericType, placeholder: 'nhập số, đơn vị: m2 hoặc ha' }),
+    field('area_ha', 'Diện tích', { type: 'text' }),
     field('production_process', 'Quy trình sản xuất', {
       type: 'textarea',
     }),
     field('members', 'Số thành viên', {
-      type: numeric ? 'number' : 'text',
+      type: 'number',
     }),
-    field('production', 'Sản lượng', { type: 'textarea', placeholder: 'tấn hoặc ha' }),
+    field('production', 'Sản lượng', { type: 'textarea' }),
     field('sales_channel', 'Kênh tiêu thụ', {
       type: 'textarea',
     }),
-    field('annual_cost', 'Chi phí/năm', { type: numericType, unit: 'triệu đồng' }),
+    field('annual_cost', 'Chi phí/năm', { type: 'number', unit: 'triệu đồng' }),
     field('annual_income', 'Thu nhập/năm', {
-      type: numericType,
+      type: 'number',
       unit: 'triệu đồng',
     }),
     field('annual_profit', 'Lợi nhuận/năm', {
-      type: numericType,
+      type: 'number',
       unit: 'triệu đồng',
     }),
     field('phone', 'Điện thoại'),
@@ -216,11 +216,11 @@ export const ADMIN_ENTITIES: AdminEntityConfig[] =
         }),
         field('ranking', 'Xếp hạng'),
         field('business_type', 'Loại hình kinh doanh'),
-        field('area_ha', 'Diện tích', { type: 'number', placeholder: 'nhập số, đơn vị: m2 hoặc ha' }),
+        field('area_ha', 'Diện tích', { type: 'text', placeholder: 'nhập số, đơn vị: m2 hoặc ha' }),
         field('production_process', 'Quy trình sản xuất', {
           type: 'textarea',
         }),
-        field('production', 'Sản lượng', { type: 'textarea', placeholder: 'tấn hoặc ha' }),
+        field('production', 'Sản lượng', { type: 'textarea' }),
         field('sales_channel', 'Kênh tiêu thụ', {
           type: 'textarea',
         }),
